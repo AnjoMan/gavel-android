@@ -1,0 +1,95 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
+<LinearLayout 
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GavelMain"
+    android:orientation="vertical"
+    android:padding="10dp"
+    >
+    
+    <TextView 
+        style="@style/personal_info_title"
+        android:text="Name"
+		/>
+    <EditText 
+        android:id="@+id/first_name"
+        style="@style/personal_info"
+        android:hint="first name"
+        android:inputType="textCapSentences"
+        />
+    <EditText 
+        android:id="@+id/last_name"
+        style="@style/personal_info"
+        android:hint="last name"
+        android:inputType="textCapSentences"
+        />
+    
+    <TextView 
+        style="@style/personal_info_title"
+        android:text="Contact Info"
+        />
+    <LinearLayout 
+        style="@style/personal_info"
+        android:orientation="horizontal" 
+        android:paddingTop="6dp"  
+        >     
+        <EditText 
+	        android:id="@+id/primary_phone"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:hint="primary phone #"
+	        android:inputType="phone"
+	        />
+        <EditText 
+	        android:id="@+id/secondary_phone"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:hint="secondary phone #"
+	        android:inputType="phone"
+	        />
+	        
+    </LinearLayout>
+    
+    <EditText
+        android:id="@+id/email_address"
+        style="@style/personal_info"
+        android:hint="email address"
+        android:inputType="textEmailAddress"
+        />
+    
+    
+    
+    
+    <TextView 
+        style="@style/personal_info_title"
+        android:text="Address"
+		/>
+    <EditText
+        android:id="@+id/street_address"
+        style="@style/personal_info"
+        android:hint="Street Address"
+        android:inputType="textCapWords"
+        />
+    
+    <EditText
+        android:id="@+id/postal_code"
+        style="@style/personal_info"
+        android:hint="Postal Code"
+        android:inputType="textCapCharacters"
+        android:imeOptions="actionDone"
+        />
+    
+    <Spinner
+        android:id="@+id/personal_cities_spinner"
+        style="@style/personal_info"
+        />
+    
+    
+       
+</LinearLayout>
+
+</ScrollView>

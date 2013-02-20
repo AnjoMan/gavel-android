@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	
+    <string name="add_item">Add Item</string>
+    <string name="about">About</string>
+    <string name="send_complaint">Send Complaint</string>
+    
+    <string name="app_name">Gavel</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_personal_info">Edit Your Information</string>
+    <string name="set_location">Set Location</string>
+    <string name="location_heading">Location</string>
+    <string name="complaint_heading">Complaint</string>
+    <string name="disclaimer">All of the rules that apply to the <a href="http://goo.gl/x7JZi">City of Hamilton bylaw enforcement form</a> apply here (it\'s the same form, after all!) </string>
+    
+    <string name="about_text">
+        Gavel for Android was developed by Anton Lodder, and is based on Adrian Duyzer\'s web / iOS app, <a href="https://github.com/adriand/gavel">Gavel</a>. This application is not directly affiliated with the <a href="http://www.hamilton.ca/index.htm">City of Hamilton</a>. </string>
+    <string-array name="cities">
+        <item>Hamilton</item>
+        <item>Ancaster</item>
+        <item>Dundas</item>
+        <item>Stoney Creek</item>
+        <item>Flamborough</item>
+        <item>Glanbrook</item>
+    </string-array>
+    
+     <string-array name="complaints">
+        <item>Snow and Ice</item>
+        <item>Barking Dogs</item>
+        <item>Business Licenses</item>
+        <item>Dog Feces</item>
+        <item>Exterior Property Maintenance</item>
+        <item>Garbage and Debris</item>
+        <item>Garbage Dumping</item>
+        <item>Illegal use of Property</item>
+        <item>Interior Property Maintenance</item>
+        <item>Long Grass</item>
+        <item>Noise</item>
+        <item>Potential Vacant Building</item>
+        <item>Signs</item>
+        <item>Other...</item>
+    </string-array>
+
+</resources>

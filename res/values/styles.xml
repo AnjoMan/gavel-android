@@ -1,0 +1,45 @@
+<resources>
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    -->
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+    
+    <style name="GavelTheme" parent="Theme.Sherlock.Light.DarkActionBar">
+        <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+    	<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+    </style>
+    
+	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
+	    <item name="background">#14a0df</item>
+	    <item name="android:background">#30a1c6</item>
+	    
+	    <!--  #14a0df old color -->
+	
+	    <item name="backgroundSplit">@android:color/darker_gray</item>
+	    <item name="android:backgroundSplit">@android:color/darker_gray</item>
+	</style>
+	
+	<style name="personal_info" parent="GavelTheme">
+	    <item name="android:layout_width">match_parent</item>
+	    <item name="android:layout_height">wrap_content</item>
+	    <item name="android:imeOptions">actionNext</item>
+	</style>
+	
+	<style name="personal_info_title" parent="personal_info">
+	    <item name="android:textStyle">bold</item>
+	    <item name="android:paddingTop">10dp</item>
+	</style>
+</resources>
