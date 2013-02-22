@@ -18,8 +18,10 @@ import com.anton.gavel.PersonalInfoDialogFragment.PersonalInfoListener;
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.location.Address;
@@ -90,12 +92,9 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		disclaimer.setMovementMethod(LinkMovementMethod.getInstance());
 		
 		// check &or load shared preferences to populate saved personal information
-		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		mPersonalInfo = new PersonalInfo();
-		Set<String> names = PersonalInfo.getNames();
-		for(String name : names)
-			mPersonalInfo.setField(name, preferences.getString(name, ""));
-			//set values in mPersonalInfo (default is "", no key is added);
+		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+		mPersonalInfo.loadFromPreferences(preferences);
 		
 			
 	}
@@ -167,12 +166,8 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 			//Log.d("Runs", mPersonalInfo.toString());
 			
 			// save personal information to file.
-			Editor edit = getPreferences(MODE_PRIVATE).edit();
-			Set<String> names = mPersonalInfo.getNames();
-			
-			for(String name : names)
-				edit.putString(name, mPersonalInfo.getField(name));
-			edit.commit();			
+			SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+			mPersonalInfo.saveToPreferences(preferences);
 		}
 	}
 	/*
@@ -185,6 +180,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	@Override
 	public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2,
 			long arg3) {
+		// handles clicks on complaintSpinner Items - get/add new complaint
 		
 		if (complaintSpinner.getSelectedItem().toString().equals("Other...")){
 			final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -257,20 +253,29 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	public void onClick(View arg0) {
 		//click listener for location button
 		
+	    
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Criteria criteria = new Criteria();
-		String provider = locationManager.getBestProvider(criteria, false);
-		Location location = locationManager.getLastKnownLocation(provider);
+		criteria.setAccuracy(Criteria.ACCURACY_FINE);
+		criteria.setPowerRequirement(Criteria.POWER_HIGH);
+		//String provider = locationManager.getBestProvider(criteria, true);
+		
+		locationManager.requestSingleUpdate(criteria, new LocationListener(){
+			@Override
+			public void onLocationChanged(Location location) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD && Geocoder.isPresent()) {
+		            // Invoking reverse geocoding in an AsyncTask. 
+		            (new ReverseGeocodingTask(getBaseContext())).execute(new Location[] {location});
+				}
+			
+			}
+			@Override public void onProviderDisabled(String provider) { }
+			@Override public void onProviderEnabled(String provider) { }
+			@Override public void onStatusChanged(String provider, int status, Bundle extras) { }
+			
+		}, null);
 		
 		
-		
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD && Geocoder.isPresent()) {
-            // Since the geocoding API is synchronous and may take a while.  You don't want to lock
-            // up the UI thread.  Invoking reverse geocoding in an AsyncTask.
-            (new ReverseGeocodingTask(this)).execute(new Location[] {location});
-        }
-
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -295,6 +300,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	            addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
 	        } catch (IOException e) {
 	            e.printStackTrace();
+	            
 	        }
 	        if (addresses != null && addresses.size() > 0) {
 	            Address address = addresses.get(0);
@@ -308,11 +314,16 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	    }
 	    
 	    protected void onPostExecute(List<Address> result){
+	    	
 	    	String address = "";
-	    	for (int i = 0; i <= result.get(0).getMaxAddressLineIndex(); i++){
-	    		address += " " + result.get(0).getAddressLine(i);
-	    	}
-	    	address.trim();
+	    	if (result != null){
+		    	for (int i = 0; i <= result.get(0).getMaxAddressLineIndex(); i++){
+		    		address += " " + result.get(0).getAddressLine(i);
+		    	}
+		    	address.trim();
+		    	
+	    	} else {address = "failed";}// if address == null, output 'failed', since dialogs don't work from here
+	    	
 	    	((EditText)findViewById(R.id.street_address)).setText(address);
 	    }
 	}

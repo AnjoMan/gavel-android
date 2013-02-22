@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
 public class PersonalInfo { 
 	public static final Integer FIRST_NAME = R.id.first_name;
 	public static final Integer LAST_NAME = R.id.last_name;
@@ -89,5 +92,20 @@ public class PersonalInfo {
 	@Override
 	public String toString(){
 		return personalInfo.toString();
+	}
+	public void loadFromPreferences(SharedPreferences preferences){
+		Set<String> names = this.getNames();
+		for(String name : names)
+			this.setField(name, preferences.getString(name, ""));
+			//set values in mPersonalInfo (default is "", no key is added);
+		
+	}
+	public void saveToPreferences(SharedPreferences preferences){
+		Editor editor = preferences.edit();
+		Set<String> names = this.getNames();
+		
+		for(String name : names)
+			editor.putString(name,  this.getField(name));
+		editor.commit();
 	}
 }
