@@ -59,6 +59,8 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	private Spinner complaintSpinner;
 	private ArrayAdapter<String> complaintsAdapter;
 	
+	
+	
 	private PersonalInfo mPersonalInfo = null;
 
 	@Override
@@ -74,10 +76,10 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		citiesSpinner.setAdapter(citiesAdapter);
 		
 		// set up complaint spinner
-		List<String> complaints = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.complaints)));
+		List<String> complaints_list = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.complaints)));
 		
 		complaintSpinner = (Spinner) findViewById(R.id.complaint_spinner);
-		complaintsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, complaints);
+		complaintsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, complaints_list);
 		complaintsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		complaintSpinner.setAdapter(complaintsAdapter);
 		complaintSpinner.setOnItemSelectedListener(this);
@@ -116,6 +118,48 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 				return true;
 			case R.id.menu_about:
 				this.createDialog(DIALOG_ABOUT);
+				return true;
+			case R.id.menu_send_complaint:
+				
+				if (mPersonalInfo.isComplete()){
+					Map<String,String> complaintMap = new HashMap<String,String>();
+					complaintMap.put("firstName", ((EditText)findViewById(R.id.complaint_first_name)).getText().toString());
+					complaintMap.put("secondName", ((EditText)findViewById(R.id.complaint_last_name)).getText().toString());
+					complaintMap.put("location", ((EditText)findViewById(R.id.complaint_address)).getText().toString());
+					complaintMap.put("city", ((Spinner)findViewById(R.id.cities_spinner)).getSelectedItem().toString());
+					complaintMap.put("complaintDetails", ((EditText)findViewById(R.id.complaint_body)).getText().toString());
+					
+					//Check if complaint is 'other' and assign accordingly
+					List<String> standardComplaints = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.complaints)));
+					
+					String complaint = ((Spinner)findViewById(R.id.complaint_spinner)).getSelectedItem().toString();
+					String otherComplaint = "";
+					if (!standardComplaints.contains(complaint)){
+						otherComplaint = complaint;
+						complaint = "Other";					
+					}// if complaint is not in the standard list, submit as an 'otherComplaint'; else submit "" as 'otherComplaint
+					
+					complaintMap.put("complaint", complaint);
+					complaintMap.put("otherComplaint",otherComplaint);
+					
+					ComplaintSubmission submission = new ComplaintSubmission(mPersonalInfo, complaintMap);
+					//submission.submit();
+					
+					//refresh: clears the complaint values and makes a nice animation showing that the action is completed.
+					finish();
+					startActivity(getIntent());
+				} else {
+					AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+					alertDialog.setTitle("Incomplete")//title
+						.setMessage("Your personal information is incomplete. Select 'Edit Personal Information' from the menu and fill in all required fields")//insert textview from above
+						.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+				            @Override public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }})	
+						.setIcon(R.drawable.ic_launcher)	
+						.create() //build
+						.show(); //display
+					
+				}
+				
 				return true;
 				
 		    default:
@@ -324,7 +368,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		    	
 	    	} else {address = "failed";}// if address == null, output 'failed', since dialogs don't work from here
 	    	
-	    	((EditText)findViewById(R.id.street_address)).setText(address);
+	    	((EditText)findViewById(R.id.complaint_address)).setText(address);
 	    }
 	}
 

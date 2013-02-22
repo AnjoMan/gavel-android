@@ -70,7 +70,10 @@ public class PersonalInfo {
 		return this.getField(nameToId.get(fieldName));
 	}
 	public boolean setField(Integer field, String value){
-		if (value.equals("")){ return false; } 
+		if (value.equals("")){ 
+			if (personalInfo.containsKey(field)){ personalInfo.remove(field); }
+			return false; 
+		} 
 		else {
 			personalInfo.put(field, value);
 			return true;

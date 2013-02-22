@@ -11,24 +11,24 @@
     
     <TextView 
         style="@style/personal_info_title"
-        android:text="Name"
+        android:text="@string/header_name"
 		/>
     <EditText 
         android:id="@+id/first_name"
         style="@style/personal_info"
-        android:hint="first name"
+        android:hint="@string/hint_first_name"
         android:inputType="textCapSentences"
         />
     <EditText 
         android:id="@+id/last_name"
         style="@style/personal_info"
-        android:hint="last name"
+        android:hint="@string/hint_last_name"
         android:inputType="textCapSentences"
         />
     
     <TextView 
         style="@style/personal_info_title"
-        android:text="Contact Info"
+        android:text="@string/header_contact_info"
         />
     <LinearLayout 
         style="@style/personal_info"
@@ -40,7 +40,7 @@
 	        android:layout_width="0dp"
 	        android:layout_height="match_parent"
 	        android:layout_weight="1"
-	        android:hint="primary phone #"
+	        android:hint="@string/hint_primary_phone"
 	        android:inputType="phone"
 	        />
         <EditText 
@@ -48,7 +48,7 @@
 	        android:layout_width="0dp"
 	        android:layout_height="match_parent"
 	        android:layout_weight="1"
-	        android:hint="secondary phone #"
+	        android:hint="@string/hint_secondary_phone"
 	        android:inputType="phone"
 	        />
 	        
@@ -57,7 +57,7 @@
     <EditText
         android:id="@+id/email_address"
         style="@style/personal_info"
-        android:hint="email address"
+        android:hint="@string/hint_email_address"
         android:inputType="textEmailAddress"
         />
     
@@ -66,19 +66,19 @@
     
     <TextView 
         style="@style/personal_info_title"
-        android:text="Address"
+        android:text="@string/header_address"
 		/>
     <EditText
         android:id="@+id/street_address"
         style="@style/personal_info"
-        android:hint="Street Address"
+        android:hint="@string/hint_street_address"
         android:inputType="textCapWords"
         />
     
     <EditText
         android:id="@+id/postal_code"
         style="@style/personal_info"
-        android:hint="Postal Code"
+        android:hint="@string/hint_postal_code"
         android:inputType="textCapCharacters"
         android:imeOptions="actionDone"
         />

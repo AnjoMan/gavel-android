@@ -1,17 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	
-    <string name="add_item">Add Item</string>
+    <!--  app strings -->
+    <string name="app_name">Gavel</string>
+    <string name="disclaimer">All of the rules that apply to the <a href="http://goo.gl/x7JZi">City of Hamilton bylaw enforcement form</a> apply here (it\'s the same form, after all!) </string>
+    
+    <!--  Strings for menu items -->
+    <string name="menu_personal_info">Edit Your Information</string>
     <string name="about">About</string>
     <string name="send_complaint">Send Complaint</string>
     
-    <string name="app_name">Gavel</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="menu_personal_info">Edit Your Information</string>
+    <!-- Strings for Complaint form -->
+    <string name="location_heading">Location/Address of Complaint</string>
+    <string name="complaint_first_name">first name (optional)</string>
+    <string name="complaint_last_name">last name (optional)</string>
     <string name="set_location">Set Location</string>
-    <string name="location_heading">Location</string>
     <string name="complaint_heading">Complaint</string>
-    <string name="disclaimer">All of the rules that apply to the <a href="http://goo.gl/x7JZi">City of Hamilton bylaw enforcement form</a> apply here (it\'s the same form, after all!) </string>
+    <string name="complaint_details">describe your complaint</string>
+    
+    
+    <!-- Strings for Personal Information -->
+    <string name="header_name">Name</string>
+    <string name="hint_first_name">first name</string>
+    <string name="hint_last_name">last name</string>
+    
+    <string name="header_contact_info">Contact Info</string>
+    <string name="hint_primary_phone">prim. phone</string>
+    <string name="hint_secondary_phone">2nd phone (optional)</string>
+    <string name="hint_email_address">email address</string>
+    
+    <string name="header_address">Address</string>
+    <string name="hint_street_address">street address</string>
+    <string name="hint_postal_code">postal code</string>
+    
+    
     
     <string name="about_text">
         Gavel for Android was developed by Anton Lodder, and is based on Adrian Duyzer\'s web / iOS app, <a href="https://github.com/adriand/gavel">Gavel</a>. This application is not directly affiliated with the <a href="http://www.hamilton.ca/index.htm">City of Hamilton</a>. </string>
