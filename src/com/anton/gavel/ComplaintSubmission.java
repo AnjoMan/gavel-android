@@ -13,13 +13,21 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
+import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 
 public class ComplaintSubmission {
 	Map <String,String> post_params = new HashMap<String,String>();
+	private Integer responseCode;
+	Context mContext;
 	
-	public ComplaintSubmission(PersonalInfo person, Map<String,String> complaint){
+	public ComplaintSubmission(GavelMain context, PersonalInfo person, Map<String,String> complaint){
+		this.mContext = context;
+		responseCode = -1;
 		
 		
 		
@@ -57,31 +65,54 @@ public class ComplaintSubmission {
 	}
 	
 	public boolean submit() {
-		String formPath = "http://www.hamilton.ca/Hamilton.Portal/Templates/COHShell.aspx?NRMODE=Published&NRORIGINALURL=%2fCityDepartments%2fCorporateServices%2fITS%2fForms%2bin%2bDevelopment%2fMunicipal%2bLaw%2bEnforcement%2bOnline%2bComplaint%2bForm%2ehtm&NRNODEGUID=%7b4319AA7C-7E5E-4D65-9F46-CCBEC9AB86E0%7d&NRCACHEHINT=Guest";
 		
-		// Create a new HttpClient and Post Header
-	    HttpClient httpClient = new DefaultHttpClient();
-	    HttpPost request = new HttpPost(formPath);
-	    JSONObject myParams = new JSONObject(post_params);
-	    
-	    
         
-        try {
-        	request.setEntity(new StringEntity(myParams.toString()));
-            HttpResponse response = httpClient.execute(request);
-            Log.d("Runs", "response");
+		//Body of your click handler
+		Thread trd = new Thread(new Runnable(){
+			@Override
+			public void run(){
+				String formPath = "http://www.hamilton.ca/Hamilton.Portal/Templates/COHShell.aspx?NRMODE=Published&NRORIGINALURL=%2fCityDepartments%2fCorporateServices%2fITS%2fForms%2bin%2bDevelopment%2fMunicipal%2bLaw%2bEnforcement%2bOnline%2bComplaint%2bForm%2ehtm&NRNODEGUID=%7b4319AA7C-7E5E-4D65-9F46-CCBEC9AB86E0%7d&NRCACHEHINT=Guest";
 
-        } catch (ClientProtocolException e) {
-            Log.d("Runs", "Client Protocol error");
-        } catch (IOException e) {
-        	Log.d("Runs", "IO error");
-        }
+				// Create a new HttpClient and Post Header
+				HttpClient httpClient = new DefaultHttpClient();
+				HttpPost request = new HttpPost(formPath);
+				JSONObject myParams = new JSONObject(post_params);
+				
+				try {
+					
+					request.setEntity(new StringEntity(myParams.toString()));
+					HttpResponse response = httpClient.execute(request);
+					
+				
+					Log.d("Runs", "response: " + response.toString() + "\n\t\t code: "+ response.getStatusLine().getStatusCode());
+					
+					Handler handler = ((GavelMain)mContext).submissionHandler;
+					Message msg = handler.obtainMessage();
+					Bundle bundle = new Bundle();
+					bundle.putInt("responseCode", response.getStatusLine().getStatusCode());
+					msg.setData(bundle);
+					handler.sendMessage(msg);
+					
+				} 
+				catch (ClientProtocolException e) {
+					Log.d("Runs", "Client Protocol error");
+				} catch (IOException e) {
+					Log.d("Runs", "IO error");
+				}//code to do the HTTP request
+				
+				
+			}
+		});
+		trd.start();
+		
+		//
         
-        
-	    return true;
-
+	    return this.responseCode == 200;
 				
 	}
+	
+	
+	
 	
 	
 

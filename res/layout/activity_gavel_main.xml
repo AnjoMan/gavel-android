@@ -16,7 +16,7 @@
 	    <TextView 
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:text="@string/location_heading"
+	        android:text="@string/header_complaint_location"
 	        android:textStyle="bold"
 	        android:paddingTop="10dp"
 	        style="@android:style/Theme.Black"
@@ -30,17 +30,22 @@
 		        android:layout_width="0dp"
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1"
-		        android:hint="@string/complaint_first_name"
+		        android:hint="@string/hint_complaint_first_name"
+		        android:inputType="textCapWords"
 		        android:id="@+id/complaint_first_name" 
-		        android:singleLine="true"
+		        android:singleLine="true"		        
+        		android:imeOptions="actionNext"
 		        android:fadingEdge="horizontal"/>
 	          <EditText
 		        android:layout_width="0dp"
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1"
-		        android:hint="@string/complaint_last_name"
+		        android:hint="@string/hint_complaint_last_name"
+		        android:inputType="textCapWords"
 		        android:id="@+id/complaint_last_name"
 		        android:singleLine="true"
+		        
+        android:imeOptions="actionNext"
 		        android:ellipsize="end" />
 	        
 	    </LinearLayout>
@@ -55,7 +60,8 @@
 		        android:layout_height="40dp"
 		        android:layout_weight="1"
 		        android:gravity="center_vertical"
-		        android:hint="@string/set_location"
+		        android:hint="@string/hint_set_location"
+		        android:inputType="textCapWords"
 		        android:layout_marginRight="10dp"
 		        android:id="@+id/complaint_address" />
 		    
@@ -63,6 +69,8 @@
 		        android:layout_width="40dp"
 		        android:layout_height="40dp"
 		        android:id="@+id/location_button"
+		        android:padding="2dp"
+		        android:src="@drawable/location_arrow"
 		        />   
 		</LinearLayout>
 		<Spinner
@@ -79,7 +87,7 @@
     <TextView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/complaint_heading"
+        android:text="@string/header_complaint"
         android:textStyle="bold"
         android:paddingTop="10dp"/>
     
@@ -96,8 +104,10 @@
         android:layout_weight="1"
         android:ems="10"
         android:gravity="top"
-        android:inputType="textMultiLine"
-        android:hint="Describe your complaint" >
+        android:inputType="textCapSentences"
+        android:imeOptions="actionDone"
+        android:hint="@string/hint_complaint_details" >
+
 
     </EditText>
     

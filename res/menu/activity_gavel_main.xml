@@ -4,7 +4,7 @@
         android:id="@+id/menu_send_complaint"
         android:showAsAction="always"
         android:title="@string/send_complaint"
-        android:icon="@drawable/a6_social_send_now"/>
+        android:icon="@drawable/send"/>
     <item
         android:id="@+id/menu_personal_info"
         android:orderInCategory="100"

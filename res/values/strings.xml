@@ -11,12 +11,12 @@
     <string name="send_complaint">Send Complaint</string>
     
     <!-- Strings for Complaint form -->
-    <string name="location_heading">Location/Address of Complaint</string>
-    <string name="complaint_first_name">first name (optional)</string>
-    <string name="complaint_last_name">last name (optional)</string>
-    <string name="set_location">Set Location</string>
-    <string name="complaint_heading">Complaint</string>
-    <string name="complaint_details">describe your complaint</string>
+    <string name="header_complaint_location">Location/Address of Complaint</string>
+    <string name="hint_complaint_first_name">first name (optional)</string>
+    <string name="hint_complaint_last_name">last name (optional)</string>
+    <string name="hint_set_location">Set Location</string>
+    <string name="header_complaint">Complaint</string>
+    <string name="hint_complaint_details">describe your complaint</string>
     
     
     <!-- Strings for Personal Information -->

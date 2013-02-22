@@ -33,6 +33,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.DialogFragment;
@@ -56,6 +57,8 @@ import android.widget.TextView;
 public class GavelMain extends SherlockFragmentActivity implements PersonalInfoListener, OnItemSelectedListener, OnItemLongClickListener, OnClickListener{
 	private static final int DIALOG_PI = 1;
 	private static final int DIALOG_ABOUT = 2;
+	private static final int DIALOG_SUBMISSION_ERR = 3;
+	private static final int DIALOG_OTHER_COMPLAINT = 4;
 	private Spinner complaintSpinner;
 	private ArrayAdapter<String> complaintsAdapter;
 	
@@ -67,7 +70,11 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gavel_main);
-		
+
+        
+		// set up edit text input style for complaints (multiline, capitalize sentences)
+		EditText edit = (EditText) findViewById(R.id.complaint_body);
+		edit.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES|InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 		// set up cities spinner
 		Spinner citiesSpinner = (Spinner) findViewById(R.id.cities_spinner);
 		ArrayAdapter<CharSequence> citiesAdapter = ArrayAdapter.createFromResource(this,
@@ -142,12 +149,10 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 					complaintMap.put("complaint", complaint);
 					complaintMap.put("otherComplaint",otherComplaint);
 					
-					ComplaintSubmission submission = new ComplaintSubmission(mPersonalInfo, complaintMap);
-					//submission.submit();
+					ComplaintSubmission submission = new ComplaintSubmission(this,mPersonalInfo, complaintMap);
+					Boolean successful = submission.submit();
 					
-					//refresh: clears the complaint values and makes a nice animation showing that the action is completed.
-					finish();
-					startActivity(getIntent());
+					
 				} else {
 					AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 					alertDialog.setTitle("Incomplete")//title
@@ -155,7 +160,6 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 						.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 				            @Override public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }})	
 						.setIcon(R.drawable.ic_launcher)	
-						.create() //build
 						.show(); //display
 					
 				}
@@ -167,14 +171,34 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		}
 	}
 	
+	Handler submissionHandler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			Bundle bundle = msg.getData();
+			Integer response = bundle.getInt("responseCode");
+			  
+			if (response.equals(200)){
+				//refresh activity
+				finish();
+				startActivity(getIntent());
+
+			} else {
+				createDialog(DIALOG_SUBMISSION_ERR);
+				
+				
+			}
+			  
+		}
+	};
+	
 	
 	public void createDialog(int id){
 		switch (id){
 		case DIALOG_PI:
 			//call custom dialog for collecting Personal Info
-			PersonalInfoDialogFragment dialog = new PersonalInfoDialogFragment();
-			dialog.setPersonalInfo(mPersonalInfo);
-	        dialog.show(getSupportFragmentManager(), "PersonalInfoDialogFragment"); 
+			PersonalInfoDialogFragment personalInfoDialog = new PersonalInfoDialogFragment();
+			personalInfoDialog.setPersonalInfo(mPersonalInfo);
+			personalInfoDialog.show(getSupportFragmentManager(), "PersonalInfoDialogFragment"); 
 	        break;
 		case DIALOG_ABOUT:	
 			//construct a simple dialog to show text
@@ -194,6 +218,19 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 				.setIcon(R.drawable.ic_launcher)	
 				.create() //build
 				.show(); //display
+			break;
+			
+		case DIALOG_SUBMISSION_ERR:
+			AlertDialog.Builder submissionErrorDialog = new AlertDialog.Builder(this);
+			submissionErrorDialog.setTitle("Submission Error")//title
+				.setMessage("There was a problem submitting your complaint on the City's website.")//insert textview from above
+				.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+		            @Override public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }})	
+				.setIcon(R.drawable.ic_launcher)	
+				.show(); //display
+			break;
+			
+		case DIALOG_OTHER_COMPLAINT:
 			break;
 		}
 		
@@ -275,7 +312,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	@Override
 	public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int position,
 			long arg3) {
-		//this method doesn't do anything because Spinners don't support long clicks (last known Dec, 2012)
+		//thiswait for response from thread method doesn't do anything because Spinners don't support long clicks (last known Dec, 2012)
 		AlertDialog.Builder deleteItem = new AlertDialog.Builder(this);
 		deleteItem.setTitle("Delete")
 				.setMessage("Delete '" + complaintsAdapter.getItem(position) + "'?" )
@@ -344,7 +381,6 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	            addresses = geocoder.getFromLocation(loc.getLatitude(), loc.getLongitude(), 1);
 	        } catch (IOException e) {
 	            e.printStackTrace();
-	            
 	        }
 	        if (addresses != null && addresses.size() > 0) {
 	            Address address = addresses.get(0);
