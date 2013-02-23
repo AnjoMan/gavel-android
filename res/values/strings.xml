@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+	This file is part of Gavel for Android.
+
+    Gavel for Android is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Gavel for Android is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Gavel for Android.  If not, see <http://www.gnu.org/licenses/>.
+  -->
 <resources>
 	
     <!--  app strings -->
@@ -36,7 +52,7 @@
     
     
     <string name="about_text">
-        Gavel for Android was developed by Anton Lodder, and is based on Adrian Duyzer\'s web / iOS app, <a href="https://github.com/adriand/gavel">Gavel</a>. This application is not directly affiliated with the <a href="http://www.hamilton.ca/index.htm">City of Hamilton</a>. </string>
+        Gavel for Android was developed by Anton Lodder, and is based on Adrian Duyzer\'s web / iOS app, <a href="https://github.com/adriand/gavel">Gavel</a>. This application is not directly affiliated with the <a href="http://www.hamilton.ca/index.htm">City of Hamilton</a>. Gavel is open-source software, distributed under GPL3. See the <a href="http://www.gnu.org/licenses">GNU General Public License </a> for more details.</string>
     <string-array name="cities">
         <item>Hamilton</item>
         <item>Ancaster</item>
