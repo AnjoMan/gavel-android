@@ -19,22 +19,33 @@
 package com.anton.gavel;
 
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONObject;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PatternMatcher;
 import android.util.Log;
 
 
@@ -43,9 +54,28 @@ public class ComplaintSubmission {
 	private Integer responseCode;
 	Context mContext;
 	
+	public Map<String,String> complaintValues = new HashMap<String,String>();
+	
+		
+		
+	
 	public ComplaintSubmission(GavelMain context, PersonalInfo person, Map<String,String> complaint){
 		this.mContext = context;
 		responseCode = -1;
+		
+		//make a map of complaints (as seen in spinner) to complaints (as should be submitted to web)
+		//List<String> standardComplaints = new ArrayList<String>(Arrays.asList(mContext.getResources().getStringArray(R.array.complaints)));
+		//List<String> complaintSubmitValues = new ArrayList<String>(Arrays.asList(mContext.getResources().getStringArray(R.array.complaint_submit_vals)));
+		
+		List<String> standardComplaints= ((GavelMain)mContext).getStandardComplaints();
+		List<String> complaintSubmitValues = ((GavelMain)mContext).getComplaintSubmitValues();
+		Iterator<String> standard = standardComplaints.iterator();
+		Iterator<String> submit = complaintSubmitValues.iterator();
+		
+		while(standard.hasNext() && submit.hasNext())
+		  complaintValues.put(standard.next(), submit.next());
+		complaintValues.put("Other", "Other");//just in case i use "Other" it should still map
+		
 		
 		
 		
@@ -57,8 +87,9 @@ public class ComplaintSubmission {
                 "Oi8vd3d3LmhhbWlsdG9uLmNhL0hlbHAvV2ViK0hlbHAvU2l0ZVJlcXVpcmVtZW50Ilw+U2l0ZSBSZXF1aXJlbWVudHNcPC9hXD4NCiAgICBcPGEgaHJlZj0iaHR0cDovL3d3dy5oYW1pbHRvbi5jYS9jb21tb24vQ29udGFjdFVzIlw+Q29udGFjdCBVc1w8L2FcPg0KICAgIFw8YSBocmVmPSJodHRwOi8vd3d3LmhhbWlsdG9uLmNhL2NvbW1vbi9TaXRlTWFwIlw+U2l0ZSBNYXBcPC9hXD4NCiAgICBcPGEgaHJlZj0iaHR0cDovL3d3dy5oYW1pbHRvbi5jYS9IZWxwL0NpdHkrb2YrSGFtaWx0b24rRkFRcyJcPkhlbHAgYW5kIEZBUXNcPC9hXD4NCiAgICBcPGEgdGFyZ2V0PSJfYmxhbmsiIGhyZWY9Imh0dHA6Ly93d3cub250YXJpby5jYS8iXD4NCiAgICAgIFw8aW1nIHNyYz0iaHR0cDovL3d3dy5oYW1pbHRvbi5jYS9IYW1pbHRvbi5Qb3J0YWwvSW5jL0ltYWdlcy9vbnRhcmlvX2xvZ28ucG5nIiBhbHQ9IiIgaWQ9Im9udGFyaW9sb2dvIiBib3JkZXI9IjAiIGhlaWdodD0iMjAiIHdpZHRoPSI2MCJcPg0KICAgIFw8L2FcPg0KICBcPC9kaXZcPg0KICBcPGRpdiBjbGFzcz0idG9wIlw+DQogICAgXDxhIGhyZWY9IiN0b3BvZnBhZ2UiXD5Ub3Agb2YgcGFnZVw8L2FcPg0KICBcPC9kaXZcPg0KICBcPHBcPkNvcHlyaWdodCDCqSAyMDEyIGhhbWlsdG9uLmNhIC0gSGFtaWx0b24sIE9udGFyaW8sIENhbmFkYVw8L3BcPg0KXDwvZGl2XD47Pj47Oz47dDw7bDxpPDA+O2k8MT47aTwyPjs+O2w8dDxwPGw8V" +
                 "mlzaWJsZTs+O2w8bzxmPjs+Pjs7Pjt0PHA8bDxWaXNpYmxlOz47bDxvPGY+Oz4+Ozs+O3Q8cDxsPFZpc2libGU7PjtsPG88Zj47Pj47Oz47Pj47Pj47Pj47Pj47bDxfeHBjTWV0YURhdGE7Pj5OwHs/MekAhEgMO/LfVIAa/1s7iw=="
                 );
-		post_params.put("COHShell:_ctl0:Button1", "ComplaintSubmission Form");
+		post_params.put("COHShell:_ctl0:Button1", "Submit Form");
 		post_params.put("idSearchString", "");
+		
 		
 		//user information
 		post_params.put("COHShell:_ctl0:qQ_FNAME", person.getField(R.id.first_name));
@@ -76,10 +107,17 @@ public class ComplaintSubmission {
 		post_params.put("COHShell:_ctl0:qQ_VFNAME",complaint.get("firstName"));
 		post_params.put("COHShell:_ctl0:qQ_VLNAME", complaint.get("lastName"));
 		post_params.put("COHShell:_ctl0:qQ_COMPOLD", "");
-		post_params.put("COHShell:_ctl0:qQ_COMP", complaint.get("complaint"));
+		post_params.put("COHShell:_ctl0:qQ_COMP", complaintValues.get(complaint.get("complaint")));//extra mapping from spinner value to web form radio button value
 		post_params.put("COHShell:_ctl0:qQ_OCOMP", complaint.get("otherComplaint"));
 		post_params.put("COHShell:_ctl0:qQ_COMMENTS", complaint.get("complaintDetails"));
 		
+		LogComplaint(post_params);
+		
+	}
+	
+	private void LogComplaint(Map<String,String> params){
+		for (String key : params.keySet())
+			Log.d("Runs", "\tfield: " +key + "\n\t\tvalue: "+params.get(key));
 	}
 	
 	public boolean submit() {
@@ -90,27 +128,41 @@ public class ComplaintSubmission {
 			@Override
 			public void run(){
 				String formPath = "http://www.hamilton.ca/Hamilton.Portal/Templates/COHShell.aspx?NRMODE=Published&NRORIGINALURL=%2fCityDepartments%2fCorporateServices%2fITS%2fForms%2bin%2bDevelopment%2fMunicipal%2bLaw%2bEnforcement%2bOnline%2bComplaint%2bForm%2ehtm&NRNODEGUID=%7b4319AA7C-7E5E-4D65-9F46-CCBEC9AB86E0%7d&NRCACHEHINT=Guest";
-
+				String hideString = "document.getElementById('mainform').style.display = 'none';";
+				 	//this javascript will be added to the page if we are successful - we can look
+					//for it to identify whether our form was successfully submitted
+				
 				// Create a new HttpClient and Post Header
 				HttpClient httpClient = new DefaultHttpClient();
+				
+				ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
+				
+				for (String key : post_params.keySet())
+					parameters.add(new BasicNameValuePair(key, post_params.get(key)));
+					//convert to a list of name-value pairs (dum, dee dum  -  duuuuumm...)
+				
 				HttpPost request = new HttpPost(formPath);
-				JSONObject myParams = new JSONObject(post_params);
 				
 				try {
+					request.setEntity(new UrlEncodedFormEntity(parameters));
 					
-					request.setEntity(new StringEntity(myParams.toString()));
-					HttpResponse response = httpClient.execute(request);
+					HttpResponse httpResponse = httpClient.execute(request);
+					HttpEntity responseEntity = httpResponse.getEntity();
 					
+					String response = responseEntity==null ? "" : EntityUtils.toString(responseEntity, EntityUtils.getContentCharSet(responseEntity));
+						//read the html page posted in response to our request
 				
-					Log.d("Runs", "response: " + response.toString() + "\n\t\t code: "+ response.getStatusLine().getStatusCode());
+					//appendLog(response); // logs html page response to a text file on sd card
 					
+					//send results to main thread via handler
 					Handler handler = ((GavelMain)mContext).submissionHandler;
 					Message msg = handler.obtainMessage();
 					Bundle bundle = new Bundle();
-					bundle.putInt("responseCode", response.getStatusLine().getStatusCode());
+					bundle.putInt("responseCode", httpResponse.getStatusLine().getStatusCode());// not necessary
+					bundle.putBoolean("succeeded", httpResponse.getStatusLine().getStatusCode()==200 && response.contains(hideString));
+					
 					msg.setData(bundle);
 					handler.sendMessage(msg);
-					
 				} 
 				catch (ClientProtocolException e) {
 					Log.d("Runs", "Client Protocol error");
@@ -127,6 +179,36 @@ public class ComplaintSubmission {
         
 	    return this.responseCode == 200;
 				
+	}
+	
+	public void appendLog(String text)
+	{       
+	   File logFile = new File("sdcard/log.txt");
+	   if (!logFile.exists())
+	   {
+	      try
+	      {
+	         logFile.createNewFile();
+	      } 
+	      catch (IOException e)
+	      {
+	         // TODO Auto-generated catch block
+	         e.printStackTrace();
+	      }
+	   }
+	   try
+	   {
+	      //BufferedWriter for performance, true to set append to file flag
+	      BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true)); 
+	      buf.append(text);
+	      buf.newLine();
+	      buf.close();
+	   }
+	   catch (IOException e)
+	   {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	   }
 	}
 	
 	

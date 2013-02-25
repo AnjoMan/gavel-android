@@ -1,4 +1,5 @@
 int array cities 0x7f0b0000
+int array complaint_submit_vals 0x7f0b0002
 int array complaints 0x7f0b0001
 int attr actionBarDivider 0x7f01000e
 int attr actionBarItemBackground 0x7f01000f

@@ -63,9 +63,9 @@
     </string-array>
     
      <string-array name="complaints">
-        <item>Snow and Ice</item>
+        <item>select a complaint</item>
         <item>Barking Dogs</item>
-        <item>Business Licenses</item>
+        <item>Business Licences</item>
         <item>Dog Feces</item>
         <item>Exterior Property Maintenance</item>
         <item>Garbage and Debris</item>
@@ -76,7 +76,26 @@
         <item>Noise</item>
         <item>Potential Vacant Building</item>
         <item>Signs</item>
+        <item>Snow and Ice</item>
         <item>Other...</item>
     </string-array>
+    
+     <string-array name = "complaint_submit_vals">
+        <item ></item>
+        <item>Barking Dogs</item>
+        <item>Business Licences</item>
+        <item>Dog feces (accumulation in residential backyard)</item>
+        <item>Exterior Property Maintenance (roof, windows, doors etc. that are broken or in need of major repair)</item>
+        <item>Garbage and Debris (residential and/or commercial properties)</item>
+        <item>Garbage dumping (garbage dumped on public properties or back alleys, ditches etc.)</item>
+        <item>Illegal use of property (zoning)</item>
+        <item>Interior Property Maintenance (rental properties)</item>
+        <item>Long grass (more than 8 inches)</item>
+        <item>Noise (only noise during the day due to construction projects, large machines or equipment etc.)</item>
+        <item>Potential Vacant Building</item>
+        <item>Signs</item>
+        <item>Snow and Ice (snow or ice that hasn\'t been cleared within 24 hours of a snow fall)</item>
+        <item>Other</item>
+     </string-array>
 
 </resources>

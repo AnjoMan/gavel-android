@@ -10,6 +10,7 @@ package com.anton.gavel;
 public final class R {
     public static final class array {
         public static final int cities=0x7f0b0000;
+        public static final int complaint_submit_vals=0x7f0b0002;
         public static final int complaints=0x7f0b0001;
     }
     public static final class attr {
