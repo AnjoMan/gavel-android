@@ -95,10 +95,10 @@ public class PersonalInfoDialogFragment extends DialogFragment{
 	
 	public PersonalInfo getPersonalInfo(){//returns a personal info 
 		PersonalInfo info = new PersonalInfo();
-		for(int i = 0; i< info.FIELDS.length; i++){
-			int key = info.FIELDS[i];
+		for(int i = 0; i< PersonalInfo.FIELDS.length; i++){
+			int key = PersonalInfo.FIELDS[i];
 			
-			if (key == info.CITY)
+			if (key == PersonalInfo.CITY)
 				info.setField(key, ((Spinner)dialogView.findViewById(key)).getSelectedItem().toString());
 			else
 				info.setField(key, ((EditText)dialogView.findViewById(key)).getText().toString());
@@ -117,10 +117,10 @@ public class PersonalInfoDialogFragment extends DialogFragment{
 		 * left blank*/
 		if (mStartingInfo == null){ return false;}
 		else {
-			for (int i = 0; i < mStartingInfo.FIELDS.length; i++){
-				int key = mStartingInfo.FIELDS[i]; //field key / view id
+			for (int i = 0; i < PersonalInfo.FIELDS.length; i++){
+				int key = PersonalInfo.FIELDS[i]; //field key / view id
 				
-				if (key == mStartingInfo.CITY){
+				if (key == PersonalInfo.CITY){
 					String cities[] = getActivity().getResources().getStringArray(R.array.cities);
 					List<String> Cities = Arrays.asList(cities);
 					int position = Cities.indexOf(mStartingInfo.getField(key));

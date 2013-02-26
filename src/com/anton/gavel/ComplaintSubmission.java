@@ -18,13 +18,11 @@
 
 package com.anton.gavel;
 
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +43,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.PatternMatcher;
 import android.util.Log;
 
 
@@ -77,7 +74,9 @@ public class ComplaintSubmission {
 		complaintValues.put("Other", "Other");//just in case i use "Other" it should still map
 		
 		
-		
+		for (String key : complaint.keySet()){
+			Log.d("Runs", "Complaint: '"+key+"', '"+complaint.get(key) + "'");
+		}
 		
 		//form fields
 		post_params.put("__VIEWSTATE", "dDwxNzUyNDY0MDEzO3Q8O2w8aTwzPjs+O2w8dDw7bDxpPDU+O2k8MTE+O2k8MTM+Oz47bDx0PDtsPGk8MD47aTwyPjs+O2w8dDxwPGw8VGV4dDs+O2w8XDxkaXYgY2xhc3M9InN1Ym5hdiJcPg0KICBcPHVsXD4NCiAgICBcPGxpXD4NCiAgICAgIFw8YSBocmVmPSIvQ2l0eURlcGFydG1lbnRzL0NvbW11bml0eVNlcnZpY2UvIlw+DQogICAgICAgIFw8c3Ryb25nXD5Db21tdW5pdHkgU2VydmljZXNcPC9zdHJvbmdcPg0KICAgICAgXDwvYVw+DQogICAgXDwvbGlcPg0KICAgIFw8dWxcPg0KICAgIFw8L3VsXD4NCiAgICBcPGxpXD4NCiAgICAgIFw8YSBocmVmPSIvQ2l0eURlcGFydG1lbnRzL0NvbnRhY3RVcy8iXD4NCiAgICAgICAgXDxzdHJvbmdcPkNvbnRhY3QgVXNcPC9zdHJvbmdcPg0KICAgICAgXDwvYVw+DQogICAgXDwvbGlcPg0KICAgIFw8dWxcPg0KICAgIFw8L3VsXD4NCiAgICBcPGxpXD4NCiAgICAgIFw8YSBocmVmPSIvQ2l0eURlcGFydG1lbnRzL0NvcnBvcmF0ZVNlcnZpY2VzLyJcPg0KICAgICAgICBcPHN0cm9uZ1w+Q29ycG9yYXRlIFNlcnZpY2VzXDwvc3Ryb25nXD4NCiAgICAgIFw8L2FcPg0KICAgIFw8L2xpXD4NCiAgICBcPHVsXD4NCiAgICBcPC91bFw+DQogICAgXDxsaVw+DQogICAgICBcPGEgaHJlZj0iL0NpdHlEZXBhcnRtZW50cy9FbWVyZ2VuY3lTZXJ2aWNlcy8iXD4NCiAgICAgICAgXDxzdHJvbmdcPkVtZXJnZW5jeSBTZXJ2aWNlc1w8L3N0cm9uZ1w+DQogICAgI" + 
@@ -111,14 +110,14 @@ public class ComplaintSubmission {
 		post_params.put("COHShell:_ctl0:qQ_OCOMP", complaint.get("otherComplaint"));
 		post_params.put("COHShell:_ctl0:qQ_COMMENTS", complaint.get("complaintDetails"));
 		
-		LogComplaint(post_params);
+		//LogComplaint(post_params);
 		
 	}
-	
+	/*
 	private void LogComplaint(Map<String,String> params){
 		for (String key : params.keySet())
 			Log.d("Runs", "\tfield: " +key + "\n\t\tvalue: "+params.get(key));
-	}
+	}*/
 	
 	public boolean submit() {
 		
@@ -137,11 +136,22 @@ public class ComplaintSubmission {
 				
 				ArrayList<NameValuePair> parameters = new ArrayList<NameValuePair>();
 				
-				for (String key : post_params.keySet())
+				for (String key : post_params.keySet()){
 					parameters.add(new BasicNameValuePair(key, post_params.get(key)));
+					String value = post_params.get(key);
+					if (value != null && value.length() > 0){
+						value = value.substring(0, Math.min(70, value.length()));
+					}
+					Log.d("Runs", "key: '"+ key+"', value: '" + value);
+				}
 					//convert to a list of name-value pairs (dum, dee dum  -  duuuuumm...)
 				
 				HttpPost request = new HttpPost(formPath);
+				
+				//set up handler/bundle to give output to main thread
+				Handler handler = ((GavelMain)mContext).submissionHandler;
+				Message msg = handler.obtainMessage();
+				Bundle bundle = new Bundle();
 				
 				try {
 					request.setEntity(new UrlEncodedFormEntity(parameters));
@@ -152,22 +162,23 @@ public class ComplaintSubmission {
 					String response = responseEntity==null ? "" : EntityUtils.toString(responseEntity, EntityUtils.getContentCharSet(responseEntity));
 						//read the html page posted in response to our request
 				
-					//appendLog(response); // logs html page response to a text file on sd card
+					appendLog(response); // logs html page response to a text file on sd card
 					
-					//send results to main thread via handler
-					Handler handler = ((GavelMain)mContext).submissionHandler;
-					Message msg = handler.obtainMessage();
-					Bundle bundle = new Bundle();
-					bundle.putInt("responseCode", httpResponse.getStatusLine().getStatusCode());// not necessary
+					
 					bundle.putBoolean("succeeded", httpResponse.getStatusLine().getStatusCode()==200 && response.contains(hideString));
 					
 					msg.setData(bundle);
 					handler.sendMessage(msg);
 				} 
 				catch (ClientProtocolException e) {
-					Log.d("Runs", "Client Protocol error");
+					
+					bundle.putBoolean("succeeded", false);
+					msg.setData(bundle);
+					handler.sendMessage(msg);
 				} catch (IOException e) {
-					Log.d("Runs", "IO error");
+					bundle.putBoolean("succeeded", false);
+					msg.setData(bundle);
+					handler.sendMessage(msg);
 				}//code to do the HTTP request
 				
 				
@@ -184,12 +195,12 @@ public class ComplaintSubmission {
 	public void appendLog(String text)
 	{       
 	   File logFile = new File("sdcard/log.txt");
-	   if (!logFile.exists())
-	   {
-	      try
-	      {
+	   if (logFile.exists())
+		   logFile.delete();
+	   if (!logFile.exists()){
+	      try {
 	         logFile.createNewFile();
-	      } 
+	      }
 	      catch (IOException e)
 	      {
 	         // TODO Auto-generated catch block

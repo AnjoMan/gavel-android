@@ -53,7 +53,6 @@ import android.os.Message;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
@@ -348,8 +347,6 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 			List<String> standardComplaints = this.getStandardComplaints();
 			List<String> complaintSubmitValues = this.getComplaintSubmitValues();
 			
-			Log.d("Runs", "Standards:\n\t"+standardComplaints.toString());
-			Log.d("Runs", "Values:\n\t"+complaintSubmitValues.toString());
 			
 			Iterator<String> standard = standardComplaints.iterator();
 			Iterator<String> submit = complaintSubmitValues.iterator();
@@ -357,7 +354,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 			while(standard.hasNext() && submit.hasNext())
 			  complaintValues.put(standard.next(), submit.next());
 			complaintValues.put("Other", "Other");//just in case i use "Other" it should still map
-			String selectedItem = complaintSpinner.getSelectedItem().toString();
+			//String selectedItem = complaintSpinner.getSelectedItem().toString();
 			String specific = complaintValues.get(complaintSpinner.getSelectedItem().toString());
 			String hint = "describe your complaint" + (specific == null || specific == "" ? "" : " about "+specific);
 
@@ -466,12 +463,13 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	            e.printStackTrace();
 	        }
 	        if (addresses != null && addresses.size() > 0) {
-	            Address address = addresses.get(0);
+	            //Address address = addresses.get(0);
 	            // Format the first line of address (if available), city, and country name.
+	            /*
 	            String addressText = String.format("%s, %s, %s",
 	                    address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(0) : "",
 	                    address.getLocality(),
-	                    address.getCountryName());
+	                    address.getCountryName()); */
 	        }
 	        return addresses;
 	    }
@@ -490,10 +488,4 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	    	((EditText)findViewById(R.id.complaint_address)).setText(address);
 	    }
 	}
-
-
-	
-	
-	
-
 }

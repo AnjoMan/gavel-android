@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
@@ -37,11 +38,13 @@ public class PersonalInfo {
 	public final Integer REQUIRED[] = {FIRST_NAME, LAST_NAME, PRIMARY_PHN, EMAIL, STREET_ADDRESS,POSTAL_CODE,CITY};
 	public static final Integer FIELDS[] = {FIRST_NAME, LAST_NAME, PRIMARY_PHN, SECONDARY_PHN, EMAIL, STREET_ADDRESS,POSTAL_CODE,CITY};
 
+	@SuppressLint("UseSparseArrays")
 	private Map<Integer, String> personalInfo = new HashMap<Integer,String>();
 		//store values
 	
 	public static final Map<String, Integer> nameToId = new HashMap<String, Integer>();
 		//get id from field description
+	@SuppressLint("UseSparseArrays")
 	public static final Map<Integer, String> idToName = new HashMap<Integer, String>();
 		//get description from id
 	static {
@@ -115,7 +118,7 @@ public class PersonalInfo {
 		return personalInfo.toString();
 	}
 	public void loadFromPreferences(SharedPreferences preferences){
-		Set<String> names = this.getNames();
+		Set<String> names = PersonalInfo.getNames();
 		for(String name : names)
 			this.setField(name, preferences.getString(name, ""));
 			//set values in mPersonalInfo (default is "", no key is added);
@@ -123,7 +126,7 @@ public class PersonalInfo {
 	}
 	public void saveToPreferences(SharedPreferences preferences){
 		Editor editor = preferences.edit();
-		Set<String> names = this.getNames();
+		Set<String> names = PersonalInfo.getNames();
 		
 		for(String name : names)
 			editor.putString(name,  this.getField(name));
