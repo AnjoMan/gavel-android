@@ -24,8 +24,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.http.HttpEntity;
@@ -48,35 +46,15 @@ import android.util.Log;
 
 public class ComplaintSubmission {
 	Map <String,String> post_params = new HashMap<String,String>();
-	private Integer responseCode;
 	Context mContext;
 	
-	public Map<String,String> complaintValues = new HashMap<String,String>();
 	
-		
 		
 	
 	public ComplaintSubmission(GavelMain context, PersonalInfo person, Map<String,String> complaint){
 		this.mContext = context;
-		responseCode = -1;
-		
-		//make a map of complaints (as seen in spinner) to complaints (as should be submitted to web)
-		//List<String> standardComplaints = new ArrayList<String>(Arrays.asList(mContext.getResources().getStringArray(R.array.complaints)));
-		//List<String> complaintSubmitValues = new ArrayList<String>(Arrays.asList(mContext.getResources().getStringArray(R.array.complaint_submit_vals)));
-		
-		List<String> standardComplaints= ((GavelMain)mContext).getStandardComplaints();
-		List<String> complaintSubmitValues = ((GavelMain)mContext).getComplaintSubmitValues();
-		Iterator<String> standard = standardComplaints.iterator();
-		Iterator<String> submit = complaintSubmitValues.iterator();
-		
-		while(standard.hasNext() && submit.hasNext())
-		  complaintValues.put(standard.next(), submit.next());
-		complaintValues.put("Other", "Other");//just in case i use "Other" it should still map
 		
 		
-		for (String key : complaint.keySet()){
-			Log.d("Runs", "Complaint: '"+key+"', '"+complaint.get(key) + "'");
-		}
 		
 		//form fields
 		post_params.put("__VIEWSTATE", "dDwxNzUyNDY0MDEzO3Q8O2w8aTwzPjs+O2w8dDw7bDxpPDU+O2k8MTE+O2k8MTM+Oz47bDx0PDtsPGk8MD47aTwyPjs+O2w8dDxwPGw8VGV4dDs+O2w8XDxkaXYgY2xhc3M9InN1Ym5hdiJcPg0KICBcPHVsXD4NCiAgICBcPGxpXD4NCiAgICAgIFw8YSBocmVmPSIvQ2l0eURlcGFydG1lbnRzL0NvbW11bml0eVNlcnZpY2UvIlw+DQogICAgICAgIFw8c3Ryb25nXD5Db21tdW5pdHkgU2VydmljZXNcPC9zdHJvbmdcPg0KICAgICAgXDwvYVw+DQogICAgXDwvbGlcPg0KICAgIFw8dWxcPg0KICAgIFw8L3VsXD4NCiAgICBcPGxpXD4NCiAgICAgIFw8YSBocmVmPSIvQ2l0eURlcGFydG1lbnRzL0NvbnRhY3RVcy8iXD4NCiAgICAgICAgXDxzdHJvbmdcPkNvbnRhY3QgVXNcPC9zdHJvbmdcPg0KICAgICAgXDwvYVw+DQogICAgXDwvbGlcPg0KICAgIFw8dWxcPg0KICAgIFw8L3VsXD4NCiAgICBcPGxpXD4NCiAgICAgIFw8YSBocmVmPSIvQ2l0eURlcGFydG1lbnRzL0NvcnBvcmF0ZVNlcnZpY2VzLyJcPg0KICAgICAgICBcPHN0cm9uZ1w+Q29ycG9yYXRlIFNlcnZpY2VzXDwvc3Ryb25nXD4NCiAgICAgIFw8L2FcPg0KICAgIFw8L2xpXD4NCiAgICBcPHVsXD4NCiAgICBcPC91bFw+DQogICAgXDxsaVw+DQogICAgICBcPGEgaHJlZj0iL0NpdHlEZXBhcnRtZW50cy9FbWVyZ2VuY3lTZXJ2aWNlcy8iXD4NCiAgICAgICAgXDxzdHJvbmdcPkVtZXJnZW5jeSBTZXJ2aWNlc1w8L3N0cm9uZ1w+DQogICAgI" + 
@@ -106,7 +84,7 @@ public class ComplaintSubmission {
 		post_params.put("COHShell:_ctl0:qQ_VFNAME",complaint.get("firstName"));
 		post_params.put("COHShell:_ctl0:qQ_VLNAME", complaint.get("lastName"));
 		post_params.put("COHShell:_ctl0:qQ_COMPOLD", "");
-		post_params.put("COHShell:_ctl0:qQ_COMP", complaintValues.get(complaint.get("complaint")));//extra mapping from spinner value to web form radio button value
+		post_params.put("COHShell:_ctl0:qQ_COMP", complaint.get("complaint"));//extra mapping from spinner value to web form radio button value
 		post_params.put("COHShell:_ctl0:qQ_OCOMP", complaint.get("otherComplaint"));
 		post_params.put("COHShell:_ctl0:qQ_COMMENTS", complaint.get("complaintDetails"));
 		
@@ -119,7 +97,7 @@ public class ComplaintSubmission {
 			Log.d("Runs", "\tfield: " +key + "\n\t\tvalue: "+params.get(key));
 	}*/
 	
-	public boolean submit() {
+	public void submit() {
 		
         
 		//Body of your click handler
@@ -171,7 +149,6 @@ public class ComplaintSubmission {
 					handler.sendMessage(msg);
 				} 
 				catch (ClientProtocolException e) {
-					
 					bundle.putBoolean("succeeded", false);
 					msg.setData(bundle);
 					handler.sendMessage(msg);
@@ -179,16 +156,14 @@ public class ComplaintSubmission {
 					bundle.putBoolean("succeeded", false);
 					msg.setData(bundle);
 					handler.sendMessage(msg);
-				}//code to do the HTTP request
-				
-				
+				}//code to do the HTTP request				
 			}
 		});
 		trd.start();
 		
 		//
         
-	    return this.responseCode == 200;
+	    return ;
 				
 	}
 	

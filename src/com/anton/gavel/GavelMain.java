@@ -72,12 +72,15 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	private static final int DIALOG_OTHER_COMPLAINT = 4;
 	private static final int DIALOG_NO_GEOCODING =5;
 	private static final int DIALOG_INCOMPLETE_PERSONAL_INFORMATION = 6;
-	private static final int DIALOG_INCOMPLETE_COMPLAINT = 7;
+	private static final int DIALOG_NO_COMPLAINT = 7;
+	private static final int DIALOG_NO_LOCATION = 8;
 	private Spinner complaintSpinner;
 	private ArrayAdapter<String> complaintsAdapter;
 	private List<String> standardComplaints = null;
 	private List<String> complaintSubmitValues = null;	
 	private PersonalInfo mPersonalInfo = null;
+	
+	private Map<String, String> complaintsMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +97,18 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		        R.array.cities, android.R.layout.simple_spinner_item);
 		citiesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		citiesSpinner.setAdapter(citiesAdapter);
+		
+		// set up complaints map
+		List<String> standardComplaints = this.getStandardComplaints();
+		List<String> complaintSubmitValues = this.getComplaintSubmitValues();
+		
+		Iterator standard = standardComplaints.iterator();
+		Iterator submit = complaintSubmitValues.iterator();
+		complaintsMap = new HashMap<String,String>();
+		//standard.next(); submit.next(); //skip the first item 'select a complaint'
+		while (standard.hasNext() && submit.hasNext())
+			complaintsMap.put(standard.next().toString(), submit.next().toString());
+				
 		
 		// set up complaint spinner
 		List<String> complaints_list= this.getStandardComplaints();
@@ -141,38 +156,36 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 			case R.id.menu_send_complaint:
 				
 				if (mPersonalInfo.isComplete()){
-					
-					String complaint = ((Spinner)findViewById(R.id.complaint_spinner)).getSelectedItem().toString();
+					// get location
 					String location = ((EditText)findViewById(R.id.complaint_address)).getText().toString();
 					
+					if (String.valueOf(location).equals("")){ createDialog(DIALOG_NO_LOCATION); return true; }
 					
-					if (location == "" || complaint == "select a complaint"){
-						createDialog(DIALOG_INCOMPLETE_COMPLAINT);
-						return true;
-					}
-					
-					Map<String,String> complaintMap = new HashMap<String,String>();
-					complaintMap.put("firstName", ((EditText)findViewById(R.id.complaint_first_name)).getText().toString()+ "");
-					complaintMap.put("secondName", ((EditText)findViewById(R.id.complaint_last_name)).getText().toString()+"");
-					complaintMap.put("location", ((EditText)findViewById(R.id.complaint_address)).getText().toString());
-					complaintMap.put("city", ((Spinner)findViewById(R.id.cities_spinner)).getSelectedItem().toString());
-					complaintMap.put("complaintDetails", ((EditText)findViewById(R.id.complaint_body)).getText().toString());
-					
-					//Check if complaint is 'other' and assign accordingly
-					//List<String> standardComplaints = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.complaints)));
-					List<String> standardComplaints = this.getStandardComplaints();
+					//get complaint
+					String userComplaint = ((Spinner)findViewById(R.id.complaint_spinner)).getSelectedItem().toString();			
+									
+					String complaint = complaintsMap.get(userComplaint);//retrieve submission value for complaint
 					String otherComplaint = "";
-					if (!standardComplaints.contains(complaint)){
-						otherComplaint = complaint;
-						complaint = "Other...";					
-					}// if complaint is not in the standard list, submit as an 'otherComplaint'; else submit "" as 'otherComplaint
 					
-					complaintMap.put("complaint", complaint);
-					complaintMap.put("otherComplaint",otherComplaint);
+					if (String.valueOf(complaint).equals("")){  createDialog(DIALOG_NO_COMPLAINT); return true; }
+						//corresponds to 'select a complaint' 
+					else if (complaint == null){
+						complaint = "Other";
+						otherComplaint = userComplaint;				
+					} //if complaint is not in the standard complaintsMap, it is a custom complaint
 					
-					ComplaintSubmission submission = new ComplaintSubmission(this,mPersonalInfo, complaintMap);
+					
+					Map<String,String> myComplaintValues = new HashMap<String,String>();
+					myComplaintValues.put("firstName", ((EditText)findViewById(R.id.complaint_first_name)).getText().toString()+ "");
+					myComplaintValues.put("secondName", ((EditText)findViewById(R.id.complaint_last_name)).getText().toString()+ "");
+					myComplaintValues.put("location", ((EditText)findViewById(R.id.complaint_address)).getText().toString());
+					myComplaintValues.put("city", ((Spinner)findViewById(R.id.cities_spinner)).getSelectedItem().toString());
+					myComplaintValues.put("complaintDetails", ((EditText)findViewById(R.id.complaint_body)).getText().toString());
+					myComplaintValues.put("complaint", complaint);
+					myComplaintValues.put("otherComplaint",otherComplaint);		
+					
+					ComplaintSubmission submission = new ComplaintSubmission(this,mPersonalInfo, myComplaintValues);
 					submission.submit();
-					
 					
 				} else {
 					createDialog(DIALOG_INCOMPLETE_PERSONAL_INFORMATION);					
@@ -295,10 +308,19 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 				.setIcon(R.drawable.ic_launcher)	
 				.show(); //display			
 			break;
-		case DIALOG_INCOMPLETE_COMPLAINT:
+		case DIALOG_NO_COMPLAINT:
+			AlertDialog.Builder noComplaint = new AlertDialog.Builder(this);
+			noComplaint.setTitle("No Comlaint Specified")//title
+				.setMessage("You must specify a complaint (e.g. barking dog).")//insert textview from above
+				.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+		            @Override public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }})	
+				.setIcon(R.drawable.ic_launcher)	
+				.show(); //display
+			break;
+		case DIALOG_NO_LOCATION:
 			AlertDialog.Builder incompleteComplaint = new AlertDialog.Builder(this);
-			incompleteComplaint.setTitle("Incomplete")//title
-				.setMessage("Your complaint is incomplete. At the minimum, you need to provide a location/city and a type of comlaint (e.g. barking dog).")//insert textview from above
+			incompleteComplaint.setTitle("No Location Specified")//title
+				.setMessage("You must specify a location (approximate street address) of the complaint.")//insert textview from above
 				.setPositiveButton("Done", new DialogInterface.OnClickListener() {
 		            @Override public void onClick(DialogInterface dialog, int id) { dialog.cancel(); }})	
 				.setIcon(R.drawable.ic_launcher)	
