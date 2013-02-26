@@ -41,8 +41,8 @@
     </style>
     
 	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-	    <item name="background">#14a0df</item>
-	    <item name="android:background">#30a1c6</item>
+	    <item name="background">#118cc3</item>
+	    <item name="android:background">#118cc3</item>
 	    
 	    <!--  #14a0df old color -->
 	

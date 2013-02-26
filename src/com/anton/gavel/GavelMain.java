@@ -55,6 +55,7 @@ import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -131,6 +132,9 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		mPersonalInfo = new PersonalInfo();
 		SharedPreferences preferences = getPreferences(MODE_PRIVATE);
 		mPersonalInfo.loadFromPreferences(preferences);
+		
+		// suppress keyboard
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
 			
 	}
