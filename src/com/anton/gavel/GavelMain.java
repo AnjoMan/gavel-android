@@ -36,6 +36,7 @@ import com.anton.gavel.PersonalInfoDialogFragment.PersonalInfoListener;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -55,6 +56,7 @@ import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -62,6 +64,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -80,15 +83,16 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	private List<String> standardComplaints = null;
 	private List<String> complaintSubmitValues = null;	
 	private PersonalInfo mPersonalInfo = null;
-	
+	private ProgressDialog progressDialog;
 	private Map<String, String> complaintsMap;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_gavel_main);
-
-        
+		
+		
 		// set up edit text input style for complaints (multiline, capitalize sentences)
 		EditText edit = (EditText) findViewById(R.id.complaint_body);
 		edit.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_SENTENCES|InputType.TYPE_TEXT_FLAG_MULTI_LINE);
@@ -103,8 +107,8 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		List<String> standardComplaints = this.getStandardComplaints();
 		List<String> complaintSubmitValues = this.getComplaintSubmitValues();
 		
-		Iterator standard = standardComplaints.iterator();
-		Iterator submit = complaintSubmitValues.iterator();
+		Iterator<String> standard = standardComplaints.iterator();
+		Iterator<String> submit = complaintSubmitValues.iterator();
 		complaintsMap = new HashMap<String,String>();
 		//standard.next(); submit.next(); //skip the first item 'select a complaint'
 		while (standard.hasNext() && submit.hasNext())
@@ -136,6 +140,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		// suppress keyboard
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
+		
 			
 	}
 
@@ -160,10 +165,17 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 			case R.id.menu_send_complaint:
 				
 				if (mPersonalInfo.isComplete()){
+					
+					progressDialog = ProgressDialog.show(this,"Sending","Uploading your complaint");
+			
+						//turn progress bar on
+					
 					// get location
 					String location = ((EditText)findViewById(R.id.complaint_address)).getText().toString();
 					
-					if (String.valueOf(location).equals("")){ createDialog(DIALOG_NO_LOCATION); return true; }
+					if (String.valueOf(location).equals("")){ createDialog(DIALOG_NO_LOCATION); 
+					return true; 
+					}
 					
 					//get complaint
 					String userComplaint = ((Spinner)findViewById(R.id.complaint_spinner)).getSelectedItem().toString();			
@@ -190,6 +202,8 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 					
 					ComplaintSubmission submission = new ComplaintSubmission(this,mPersonalInfo, myComplaintValues);
 					submission.submit();
+					
+					
 					
 				} else {
 					createDialog(DIALOG_INCOMPLETE_PERSONAL_INFORMATION);					
@@ -221,6 +235,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	
 	
 	public void createDialog(int id){
+		progressDialog.dismiss();
 		// handles creation of any dialogs by other actions
 		switch (id){
 		case DIALOG_PI:
