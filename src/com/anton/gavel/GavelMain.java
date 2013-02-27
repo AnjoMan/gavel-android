@@ -235,7 +235,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 	
 	
 	public void createDialog(int id){
-		progressDialog.dismiss();
+		if (progressDialog != null){ progressDialog.dismiss();}
 		// handles creation of any dialogs by other actions
 		switch (id){
 		case DIALOG_PI:
