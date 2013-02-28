@@ -113,7 +113,7 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		//standard.next(); submit.next(); //skip the first item 'select a complaint'
 		while (standard.hasNext() && submit.hasNext())
 			complaintsMap.put(standard.next().toString(), submit.next().toString());
-				
+
 		
 		// set up complaint spinner
 		List<String> complaints_list= this.getStandardComplaints();
@@ -140,7 +140,10 @@ public class GavelMain extends SherlockFragmentActivity implements PersonalInfoL
 		// suppress keyboard
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		
-		
+		// set complaint location to multiline for large layouts
+		if (findViewById(R.id.layout_large_land) != null || findViewById(R.id.layout_large) != null){
+			((EditText)findViewById(R.id.complaint_address)).setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_MULTI_LINE|InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+		}
 			
 	}
 

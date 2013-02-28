@@ -24,18 +24,23 @@
 <LinearLayout 
     
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".GavelMain"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/layout_large"
+    >
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/darker_gray"
         android:orientation="vertical"
-        android:padding="30dp"
-        android:paddingBottom="10dp"
-        >
+        android:paddingTop="30dp"
+        android:paddingLeft="30dp"
+        android:paddingBottom="30dp"
+        android:paddingRight="70dp"
+        > <!--  Grey Box -->
+        
 	    <TextView 
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
@@ -67,22 +72,22 @@
 		        android:inputType="textCapWords"
 		        android:id="@+id/complaint_last_name"
 		        android:singleLine="true"
-		        
-        android:imeOptions="actionNext"
+        		android:imeOptions="actionNext"
 		        android:ellipsize="end" />
 	        
-	    </LinearLayout>
+	    </LinearLayout> <!-- ends first/last name -->
 	    
 	    
 	    <LinearLayout
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
+	        android:orientation="horizontal"
+	        android:paddingTop="10dp">
 		    <EditText
 		        android:layout_width="0dp"
-		        android:layout_height="40dp"
+		        android:layout_height="80dp"
 		        android:layout_weight="1"
-		        android:gravity="center_vertical"
+		        android:gravity="top"
 		        android:hint="@string/hint_set_location"
 		        android:inputType="textCapWords"
 		        android:layout_marginRight="10dp"
@@ -94,8 +99,10 @@
 		        android:id="@+id/location_button"
 		        android:padding="2dp"
 		        android:src="@drawable/location_arrow"
+		        android:gravity="top"
+		        android:contentDescription="@string/location_arrow_content_description"
 		        />   
-		</LinearLayout>
+		</LinearLayout> <!--  ends location/address  -->
 		<Spinner
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
@@ -103,49 +110,50 @@
 	        style="@android:style/Theme.Black"	/>
 	</LinearLayout> <!--  Grey Box -->
 	
-    
-	<LinearLayout
+    <!--  white box -->
+	<LinearLayout 
 	    android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="30dp">
-    <TextView 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/header_complaint"
-        android:textStyle="bold"
-		style="@android:style/Theme.Black"
-        android:paddingTop="10dp"/>
+        android:paddingTop="30dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="70dp"
+        android:paddingBottom="30dp">
+		
+	    <TextView 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/header_complaint"
+	        android:textStyle="bold"
+			style="@android:style/Theme.Black"
+	        android:paddingTop="10dp"/>
     
-    <Spinner 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:id="@+id/complaint_spinner" />
+	    <Spinner 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:padding="5dp"
+	        android:id="@+id/complaint_spinner" />
 
-    <EditText
-        android:id="@+id/complaint_body"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:ems="10"
-        android:gravity="top"
-        android:inputType="textCapSentences"
-        android:imeOptions="actionDone"
-        android:hint="@string/hint_complaint_details" >
-
-
-    </EditText>
+	    <EditText
+	        android:id="@+id/complaint_body"
+	        android:layout_width="match_parent"
+	        android:layout_height="0dp"
+	        android:layout_weight="1"
+	        android:ems="10"
+	        android:gravity="top"
+	        android:inputType="textCapSentences"
+	        android:imeOptions="actionDone"
+	        android:hint="@string/hint_complaint_details" />
     
-    <TextView 
-        android:id="@+id/disclaimer_textview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="7dp"
-        android:paddingTop="2dp"
-        android:text="@string/disclaimer" />
+	    <TextView 
+	        android:id="@+id/disclaimer_textview"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:padding="7dp"
+	        android:paddingTop="2dp"
+	        android:text="@string/disclaimer" />
     
-    </LinearLayout>
-</LinearLayout>
+    </LinearLayout> <!-- ends white box -->
+</LinearLayout> <!--  ends window -->
 
-</ScrollView>
+</ScrollView> <!-- ends scrollbox wrapper -->

@@ -34,6 +34,8 @@
     <string name="header_complaint">Complaint</string>
     <string name="hint_complaint_details">describe your complaint</string>
     
+    <string name="location_arrow_content_description">get location of complaint from gps or network</string>
+    
     
     <!-- Strings for Personal Information -->
     <string name="header_name">Name</string>
